@@ -31,7 +31,7 @@ public class KeepAliveService {
     
     //Thread Properties
     final Integer delay = 10000;
-    final Integer interval = 10000;
+    final Integer interval = 60000;
 
     public void keepAliveInitial() {
         for (Device d : dRepository.findAll()){
@@ -94,10 +94,10 @@ public class KeepAliveService {
         if(resultSend){
             System.out.println("Ping  req ok -> Esperando resposta do cliente Dispositivo --> " + deviceHandle.getName());
             if(reciveClientResponse(deviceHandle)){
-                System.out.println("Dispositivo " + deviceHandle.getName() + " se mantém conectado!"); 
+                System.out.println("Dispositivo: " + deviceHandle.getName() + " se mantém conectado!"); 
                 return true; 
             }
-            System.out.println("Dispositivo" + deviceHandle.getName() + "será desconectado!"); 
+            System.out.println("Dispositivo: " + deviceHandle.getName() + " será desconectado!"); 
             stopThread(deviceHandle.getName());
             return false; 
         } 

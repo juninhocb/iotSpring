@@ -29,8 +29,8 @@ public class TriggerResource {
                 return ResponseEntity.ok("Dispositivo já se encontra ligado!");
             }
         }
-
-        return ResponseEntity.ok("Dispositivo não está conecatado com o broker"); 
+        
+        return ResponseEntity.badRequest().body("Dispositivo não está conectado com o broker");
         
     } 
 }

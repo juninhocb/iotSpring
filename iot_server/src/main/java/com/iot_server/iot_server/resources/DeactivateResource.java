@@ -26,9 +26,7 @@ public class DeactivateResource {
             }
             return ResponseEntity.ok("Dispositivo já está desligado!");
         }
-
-        return ResponseEntity.ok("Dispositivo não está conectado ao broker!");
-        
-
+    
+        return ResponseEntity.badRequest().body("Dipositivo não está conectado com o Broker");
     }
 }
