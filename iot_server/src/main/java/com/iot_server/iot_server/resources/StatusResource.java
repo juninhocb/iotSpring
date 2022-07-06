@@ -19,9 +19,9 @@ public class StatusResource {
     private StatusService sService; 
     
     @GetMapping(value = "/{deviceName}")
-    public ResponseEntity <Dictionary> getStatus(@PathVariable String deviceName){
+    public ResponseEntity <Dictionary<String, Boolean>> getStatus(@PathVariable String deviceName){
 
-        Dictionary obj = sService.getStatus(deviceName); 
+        Dictionary<String, Boolean> obj = sService.getStatus(deviceName); 
         return ResponseEntity.ok().body(obj); 
     }
 

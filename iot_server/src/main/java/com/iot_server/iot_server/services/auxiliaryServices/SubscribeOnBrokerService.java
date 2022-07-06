@@ -22,14 +22,13 @@ public class SubscribeOnBrokerService {
     public Boolean subAndWait(Device deviceHandle) { 
         MqttProperties master =  new MqttProperties();
         connAndSub(master, deviceHandle);
-        System.out.println("Próxima Instrução!!!!!!!!!! Device ------>" + deviceHandle.getName());
         return isResponse; 
     }
 
     public void connAndSub(MqttProperties master, Device deviceHandle) {
         
         isResponse = false; 
-        System.out.println("ANTES DA INSCRIÇÃO, AGUARDANDO RESPOSTA........... " + deviceHandle.getName()); 
+        System.out.println("[SUBSCRIBE] AGUARDANDO RESPOSTA DISPOSITIVO: " + deviceHandle.getName() + "................"); 
         
           
         try {
@@ -46,10 +45,10 @@ public class SubscribeOnBrokerService {
 
             master.getClient().toAsync().publishes(ALL, publish -> 
             {
-                System.out.println("DISPOSITIVO RESPONDEU: " + deviceHandle.getName());
+                System.out.println("[ASYNC SUBSCRIBE] DISPOSITIVO RESPONDEU: " + deviceHandle.getName());
                 isResponse = true; 
-                deviceHandle.setIsConnected(true);
-                dRepository.save(deviceHandle);
+                //deviceHandle.setIsConnected(true);
+                //dRepository.save(deviceHandle);
                 master.getClient().disconnect();  
                 
             });
@@ -63,7 +62,7 @@ public class SubscribeOnBrokerService {
             
         } catch (RuntimeException exception) {
             exception.printStackTrace();
-            System.out.println("ENTREI NA EXCEPTION");
+            System.out.println("[SUBSCRIBE] EXCEPTION");
         }
         
 

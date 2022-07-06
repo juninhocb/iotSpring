@@ -43,21 +43,21 @@ public class KeepAliveService {
         newClientThread(deviceName);
     }
 
-    public void newClientThread(String deviceAddName){
+    public void newClientThread(String deviceAddName){      
         for (Device d : dRepository.findAll()){
             if (d.getName().equals(deviceAddName)){
                 Timer timer = new Timer();
                 d.setThreadAssign(timer.toString());
                 d.setIsConnected(true);
                 dRepository.save(d);
+                Device cloneObj = d; 
                 list.add(timer);
                 timer.scheduleAtFixedRate(new TimerTask(){
                 @Override
                 public synchronized void run(){
                     try {
-                        System.out.println("Inializando novamente a thread DEVICE: " + d.getName() + " ----------------------------------"); 
-                        newRunThreadAssignment(d); 
-                        test (deviceAddName);    
+                        System.out.println("[NEW CLIENT THREAD] Inicializando novamente a thread DEVICE: " + d.getName()); 
+                        newRunThreadAssignment(cloneObj);    
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -65,13 +65,6 @@ public class KeepAliveService {
                 }, delay, interval);
             }     
         }
-    }
-
-    public synchronized void test(String deviceName) throws InterruptedException{
-
-        System.out.println("Rodando Thread do device ------------------> " + deviceName);
-        Thread.sleep(2000);
-
     }
 
     public synchronized void showListThread(String nameDevice){
@@ -89,25 +82,27 @@ public class KeepAliveService {
     public synchronized Boolean newRunThreadAssignment(Device deviceHandle) throws InterruptedException{
         Boolean resultSend;
          
-        System.out.println(deviceHandle.getName() + " Cliente " + deviceHandle.getClient().getName() + " Rodando");
+        //System.out.println(deviceHandle.getName() + "[NEW RUN THREAD ASSIGNMENT] Cliente " + deviceHandle.getClient().getName() + " Rodando");
+
         resultSend = auxServicePub.publish(deviceHandle.getName(), "30", false);
         if(resultSend){
-            System.out.println("Ping  req ok -> Esperando resposta do cliente Dispositivo --> " + deviceHandle.getName());
+            System.out.println("[NEW RUN THREAD ASSIGNMENT] Ping Req OK, Dispositivo: " + deviceHandle.getName());
+
             if(reciveClientResponse(deviceHandle)){
-                System.out.println("Dispositivo: " + deviceHandle.getName() + " se mantém conectado!"); 
+                System.out.println("[NEW RUN THREAD ASSIGNMENT] Dispositivo: " + deviceHandle.getName() + " se mantém conectado!"); 
                 return true; 
             }
-            System.out.println("Dispositivo: " + deviceHandle.getName() + " será desconectado!"); 
+            System.out.println("[NEW RUN THREAD ASSIGNMENT] Dispositivo: " + deviceHandle.getName() + " será desconectado!"); 
             stopThread(deviceHandle.getName());
             return false; 
         } 
-        System.out.println("FALHA DO SERVIDOR [não foi possível enviar keep alive, checar conexão com internet!] ");
+        System.out.println("[NEW RUN THREAD ASSIGNMENT] FALHA DO SERVIDOR \"não foi possível enviar keep alive, checar conexão com internet!\" ");
         return false; 
     }
 
     public synchronized Boolean reciveClientResponse(Device deviceHandle) throws InterruptedException{
         Boolean isResponse = false; 
-        System.out.println("Cliente: " + deviceHandle.getName() + " irá se inscrever no tópico Alive");
+        System.out.println("[RECIVE CLIENTE RESPONSE] Cliente: " + deviceHandle.getName() + " irá se inscrever no tópico Alive");
         isResponse = auxServiceSub.subAndWait(deviceHandle);             
         return isResponse;     
     }
@@ -123,7 +118,7 @@ public class KeepAliveService {
                         d.setStatus(false);
                         d.setIsConnected(false);
                         list.remove(i);
-                        System.out.println("Fechando a conexão com o broker, pois o ESP 8266 Desligou! Dispositivo: " + d.getName());
+                        System.out.println("[CLOSE THREAD] Fechando a conexão com o broker, pois o ESP 8266 Desligou! Dispositivo: " + d.getName());
                         dRepository.save(d);
                     }
                 }

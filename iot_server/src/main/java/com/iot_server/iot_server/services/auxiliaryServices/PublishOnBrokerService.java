@@ -24,31 +24,32 @@ public class PublishOnBrokerService {
                 if (msg == "10" && d.getStatus().equals(true)){
                     d.setStatus(false);
                     deviceRepository.save(d);
-                    System.out.println("Mensagem 10 enviada ao topico: " + deviceName + " com Sucesso!");
+                    System.out.println("[PUBLISH] Mensagem 10 enviada ao topico: " + deviceName + " com Sucesso!");
                     return true; 
                 } else if(msg == "11" && d.getStatus().equals(false)){
                     d.setStatus(true);
                     deviceRepository.save(d);
-                    System.out.println("Mensagem 11 enviada ao topico: "+ deviceName + " com Sucesso!");
+                    System.out.println("[PUBLISH] Mensagem 11 enviada ao topico: "+ deviceName + " com Sucesso!");
                     return true;
                 }
 
                 if (d.getStatus().equals(false)){
-                    System.out.println("O aparelho já se encontra desligado!");
+                    System.out.println("[PUBLISH] O aparelho já se encontra desligado!");
                     return false; 
                 } 
-                System.out.println("O aparelho já se encontra ligado!");
+                System.out.println("[PUBLISH] O aparelho já se encontra ligado!");
                 return false; 
 
             } else if (d.getName().equals(deviceName)){
                 try{
                     connAndPub(master, deviceName, msg);
-                    System.out.println("Mensagem de keep alive enviada com sucesso! Dispositivo --> " + deviceName);
+                    System.out.println("[PUBLISH] Mensagem de keep alive enviada com sucesso! Dispositivo --> " + deviceName);
                     return true;
                 } catch(RuntimeException e){
                     e.printStackTrace();
                     d.setIsConnected(false);
-                    System.out.println("Mensgem do keep alive com falhas Dispositivo -->" + deviceName);
+                    d.setStatus(false);
+                    System.out.println("[PUBLISH] Mensgem do keep alive com falhas Dispositivo -->" + deviceName);
                     deviceRepository.save(d);
                     return false; 
                 }

@@ -43,10 +43,10 @@ public class DeviceService {
     public Device newAttemptConnection(String name, TypeDevice type, String nameCli){
         for (Device d : deviceRepository.findAll()){
             if(d.getName().equals(name) && !d.getIsConnected()){
-                System.out.println("Irá se conectar novamente");
+                System.out.println("[DEVICE - ATTEMPT CONNECTION] " + d.getName() + " Irá se conectar novamente");
                 return d;
             }else if (d.getIsConnected() && d.getName().equals(name)){ 
-                System.out.println("Já está conectado!");
+                System.out.println("[DEVICE - ATTEMPT CONNECTION] " +  d.getName() +  "Já está conectado!");
                 return d;
             }
         }
@@ -65,7 +65,7 @@ public class DeviceService {
                     Device dObj = new Device(null, name, type, u);
                     dObj.newMacAdress();
                     deviceRepository.save(dObj);
-                    System.out.println("Novo device " + dObj.getName() + " Criado com sucesso!");
+                    System.out.println("[NEW DEVICE] Novo device " + dObj.getName() + " Criado com sucesso!");
                     return dObj;               
                 }
             }
